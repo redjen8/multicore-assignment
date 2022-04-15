@@ -6,19 +6,19 @@ import java.util.ArrayList;
 class CyclicThread extends Thread {
 
     private int primeCnt = 0;
+    private int residual = 0;
+    private int limit = 0;
     private List<Integer> workArray;
 
     CyclicThread(int residual, int limit) {
-        workArray = new ArrayList<>();
-        for (int k = 0; 4*k + residual < limit; k++) {
-            workArray.add(4*k + residual);
-        }
+        this.residual = residual;
+        this.limit = limit;   
     }
 
     @Override
     public void run() {
-        for (int target : workArray) {
-            if (pc_static_cyclic.isPrime(target)) primeCnt++;
+        for (int i = 0; 4*i + residual<limit; i++) {
+            if (pc_static_cyclic.isPrime(4*i + residual)) primeCnt++;
         }
     }
 
