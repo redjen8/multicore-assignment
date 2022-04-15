@@ -49,7 +49,7 @@ public class MatMultD
    }
 
     public static void printMatrix(int[][] mat) {
-    System.out.println("Matrix["+mat.length+"]["+mat[0].length+"]");
+        System.out.println("Matrix["+mat.length+"]["+mat[0].length+"]");
         int rows = mat.length;
         int columns = mat[0].length;
         int sum = 0;
@@ -74,11 +74,11 @@ public class MatMultD
         int ans[][] = new int[m][p];
 
         for(int i = 0;i < m;i++){
-        for(int j = 0;j < p;j++){
-            for(int k = 0;k < n;k++){
-            ans[i][j] += a[i][k] * b[k][j];
+            for(int j = 0;j < p;j++){
+                for(int k = 0;k < n;k++){
+                ans[i][j] += a[i][k] * b[k][j];
+                }
             }
-        }
         }
         return ans;
     }
