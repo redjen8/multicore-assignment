@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 class DynamicThread extends Thread {
 
     private static AtomicInteger currentNum = new AtomicInteger(1);
-    private static int primeCnt = 0;
+    public static int primeCnt = 0;
     private int limit = 200000;
 
     DynamicThread(int limit) {
@@ -24,10 +24,6 @@ class DynamicThread extends Thread {
             primeCnt++;
         }
         currentNum.incrementAndGet();
-    }
-
-    public static int getPrimeCnt() {
-        return this.primeCnt;
     }
 }
 
