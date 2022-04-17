@@ -110,6 +110,15 @@ public class MatMultD
             threadList[i] = new MatrixThread(i, thread_no);
             threadList[i].start();
         }
+
+        try{
+            for (int i = 0; i<thread_no; i++) {
+                threadList[i].join();
+            }
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return ans;
     }
 
