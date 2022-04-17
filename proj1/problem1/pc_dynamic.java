@@ -36,7 +36,6 @@ public class pc_dynamic {
             NUM_THREADS = Integer.parseInt(args[0]);
             NUM_END = Integer.parseInt(args[1]);
         }
-        NUM_THREADS = 4;
         int counter = 0;
         int i;
         DynamicThread[] threadList = new DynamicThread[NUM_THREADS];
