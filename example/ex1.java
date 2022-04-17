@@ -1,3 +1,5 @@
+package example;
+
 class C extends Thread {
     int i;
     C(int i) { this.i = i; }

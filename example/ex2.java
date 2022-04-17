@@ -1,3 +1,5 @@
+package example;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 class Ex2 extends Thread {
