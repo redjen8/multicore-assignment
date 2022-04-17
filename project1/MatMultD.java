@@ -24,7 +24,11 @@ class MatrixThread extends Thread {
         int p = b[0].length;
         int t = thread_no;
         while (t < m*p) {
-            result[t/m][t%p] = t % thread_size;
+            int eachCellResult = 0;
+            for (int i = 0; i<n; i++) {
+                eachCellResult += a[t/m][i] * b[i][t%p];
+            }
+            result[t/m][t%p] = eachCellResult;
             t += thread_size;
         }
     }
@@ -89,7 +93,6 @@ public class MatMultD
         }
         System.out.println();
         System.out.println("Matrix Sum = " + sum + "\n");
-        System.out.println(MatrixThread.cnt);
     }
 
     public static int[][] multMatrix(int a[][], int b[][], int thread_no){//a[m][n], b[n][p]
@@ -120,9 +123,5 @@ public class MatMultD
             e.printStackTrace();
         }
         return ans;
-    }
-
-    public static int[] getColumn(int[][] matrix, int column) {
-        return IntStream.range(0, matrix.length).map(i -> matrix[i][column]).toArray();
     }
 }
