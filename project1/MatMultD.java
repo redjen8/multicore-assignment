@@ -6,27 +6,29 @@ import java.lang.*;
 
 class MatrixThread extends Thread {
 
-    private int oneCellResult = 0;
-    private int n = 0;
-    private int[] a;
-    private int[] b;
+    private int thread_no = 0;
+    private int thread_size = 0;
+    static int[][] a;
+    static int[][] b;
+    static int[][] result;
 
-    MatrixThread(int[] a, int[] b, int n) {
-        this.a = a;
-        this.b = b;
-        this.n = n;
+    MatrixThread(int num, int size) {
+        this.thread_no = num;
+        this.thread_size = size;
     }
 
     @Override
     public void run () {
-        for (int i = 0; i < n; i++) {
-            oneCellResult += a[i] * b[i];
+        int m = a.length;
+        int n = a[0].length;
+        int p = b[0].length;
+        int t = thread_no;
+        while (t < m*p) {
+            result[t/m][t%p] = t % thread_size;
+            t += thread_size;
         }
     }
 
-    public int getOneCellResult() {
-        return this.oneCellResult;
-    }
 }
 // command-line execution example) java MatmultD 6 < mat500.txt
 // 6 means the number of threads to use
@@ -87,6 +89,7 @@ public class MatMultD
         }
         System.out.println();
         System.out.println("Matrix Sum = " + sum + "\n");
+        System.out.println(MatrixThread.cnt);
     }
 
     public static int[][] multMatrix(int a[][], int b[][], int thread_no){//a[m][n], b[n][p]
@@ -97,15 +100,15 @@ public class MatMultD
         int m = a.length;
         int p = b[0].length;
         int ans[][] = new int[m][p];
-
-        for (int t = 0; t<thread_no; t++) {
-            for (int i = 0; i * thread_no + t < m; i++) {
-                for(int j = 0;j < p;j++){
-                    System.out.println(a[i]);
-                    System.out.println(getColumn(b, j));
-                    
-                }
-            }
+        
+        MatrixThread.a = a;
+        MatrixThread.b = b;
+        MatrixThread.result = ans;
+        
+        MatrixThread[] threadList = new MatrixThread[thread_no];
+        for (int i = 0; i<thread_no; i++) {
+            threadList[i] = new MatrixThread(i, thread_no);
+            threadList[i].start();
         }
         return ans;
     }
