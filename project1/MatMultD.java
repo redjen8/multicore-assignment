@@ -1,8 +1,33 @@
 package project1;
 
 import java.util.*;
+import java.util.stream.IntStream;
 import java.lang.*;
 
+class MatrixThread extends Thread {
+
+    private int oneCellResult = 0;
+    private int n = 0;
+    private int[] a;
+    private int[] b;
+
+    MatrixThread(int[] a, int[] b, int n) {
+        this.a = a;
+        this.b = b;
+        this.n = n;
+    }
+
+    @Override
+    public void run () {
+        for (int i = 0; i < n; i++) {
+            oneCellResult += a[i] * b[i];
+        }
+    }
+
+    public int getOneCellResult() {
+        return this.oneCellResult;
+    }
+}
 // command-line execution example) java MatmultD 6 < mat500.txt
 // 6 means the number of threads to use
 // < mat500.txt means the file that contains two matrices is given as standard input
@@ -17,13 +42,13 @@ public class MatMultD
     {
         int thread_no=0;
         if (args.length==1) thread_no = Integer.valueOf(args[0]);
-        else thread_no = 1;
+        else thread_no = 4;
             
         int a[][]=readMatrix();
         int b[][]=readMatrix();
 
         long startTime = System.currentTimeMillis();
-        int[][] c=multMatrix(a,b);
+        int[][] c=multMatrix(a,b, thread_no);
         long endTime = System.currentTimeMillis();
 
         //printMatrix(a);
@@ -64,7 +89,7 @@ public class MatMultD
         System.out.println("Matrix Sum = " + sum + "\n");
     }
 
-    public static int[][] multMatrix(int a[][], int b[][]){//a[m][n], b[n][p]
+    public static int[][] multMatrix(int a[][], int b[][], int thread_no){//a[m][n], b[n][p]
         if(a.length == 0) return new int[0][0];
         if(a[0].length != b.length) return null; //invalid dims
 
@@ -73,13 +98,19 @@ public class MatMultD
         int p = b[0].length;
         int ans[][] = new int[m][p];
 
-        for(int i = 0;i < m;i++){
-            for(int j = 0;j < p;j++){
-                for(int k = 0;k < n;k++){
-                ans[i][j] += a[i][k] * b[k][j];
+        for (int t = 0; t<thread_no; t++) {
+            for (int i = 0; i * thread_no + t < m; i++) {
+                for(int j = 0;j < p;j++){
+                    System.out.println(a[i]);
+                    System.out.println(getColumn(b, j));
+                    
                 }
             }
         }
         return ans;
+    }
+
+    public static int[] getColumn(int[][] matrix, int column) {
+        return IntStream.range(0, matrix.length).map(i -> matrix[i][column]).toArray();
     }
 }
