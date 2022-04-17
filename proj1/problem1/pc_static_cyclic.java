@@ -1,29 +1,33 @@
-package project1;
+package proj1.problem1;
 
-class BlockThread extends Thread {
+import java.util.List;
+import java.util.ArrayList;
 
-    private int blockSize = 50000;
-    private int endNum;
-    private int cnt = 0;
+class CyclicThread extends Thread {
 
-    BlockThread(int i, int blockSize) {
-        this.endNum = i;
-        this.blockSize = blockSize;
+    private int primeCnt = 0;
+    private int residual = 0;
+    private int limit = 0;
+    private List<Integer> workArray;
+
+    CyclicThread(int residual, int limit) {
+        this.residual = residual;
+        this.limit = limit;   
     }
 
     @Override
     public void run() {
-        for (int i = endNum-blockSize; i<endNum; i++) {
-            if(pc_static_block.isPrime(i)) cnt++;
+        for (int i = 0; 4*i + residual<limit; i++) {
+            if (pc_static_cyclic.isPrime(4*i + residual)) primeCnt++;
         }
     }
 
-    public int getCnt() {
-        return this.cnt;
+    public int getCnt () {
+        return this.primeCnt;
     }
 }
 
-public class pc_static_block {
+public class pc_static_cyclic {
     private static int NUM_END = 200000;
     private static int NUM_THREADS = 1;
 
@@ -32,21 +36,19 @@ public class pc_static_block {
             NUM_THREADS = Integer.parseInt(args[0]);
             NUM_END = Integer.parseInt(args[1]);
         }
-        // 테스트 환경에서만 사용, 나중에 제거
         NUM_THREADS = 4;
         int counter = 0;
         int i;
+        CyclicThread[] threadList = new CyclicThread[NUM_THREADS];
         long startTime = System.currentTimeMillis();
-        BlockThread[] threadArr = new BlockThread[NUM_THREADS];
-        int BLOCK_SIZE = NUM_END / NUM_THREADS;
-        for (i=1; i<(1+NUM_THREADS); i++) {
-            threadArr[i-1] = new BlockThread(BLOCK_SIZE * i, BLOCK_SIZE);
-            threadArr[i-1].start();
+        for (i=0; i<NUM_THREADS; i++) {
+            threadList[i] = new CyclicThread(i, NUM_END);
+            threadList[i].start();
         }
         try {
             for (i=0; i<NUM_THREADS; i++) {
-                threadArr[i].join();
-                counter += threadArr[i].getCnt();
+                threadList[i].join();
+                counter += threadList[i].getCnt();
             }
         }
         catch (InterruptedException e) {
@@ -66,5 +68,4 @@ public class pc_static_block {
         }
         return true;
     }
-    
 }

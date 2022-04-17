@@ -1,4 +1,4 @@
-package project1;
+package proj1.problem1;
 
 public class pc_serial {
     private static int NUM_END = 200000;

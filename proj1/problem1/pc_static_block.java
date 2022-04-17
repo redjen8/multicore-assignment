@@ -1,33 +1,29 @@
-package project1;
+package proj1.problem1;
 
-import java.util.concurrent.atomic.AtomicInteger;
+class BlockThread extends Thread {
 
-class DynamicThread extends Thread {
+    private int blockSize = 50000;
+    private int endNum;
+    private int cnt = 0;
 
-    private static AtomicInteger currentNum = new AtomicInteger(1);
-    public static int primeCnt = 0;
-    private int limit = 200000;
-
-    DynamicThread(int limit) {
-        this.limit = limit;
-    } 
+    BlockThread(int i, int blockSize) {
+        this.endNum = i;
+        this.blockSize = blockSize;
+    }
 
     @Override
     public void run() {
-        while(currentNum.get() < limit) {
-            increment();
+        for (int i = endNum-blockSize; i<endNum; i++) {
+            if(pc_static_block.isPrime(i)) cnt++;
         }
     }
 
-    static synchronized void increment() {
-        if (pc_dynamic.isPrime(currentNum.get())) {
-            primeCnt++;
-        }
-        currentNum.incrementAndGet();
+    public int getCnt() {
+        return this.cnt;
     }
 }
 
-public class pc_dynamic {
+public class pc_static_block {
     private static int NUM_END = 200000;
     private static int NUM_THREADS = 1;
 
@@ -36,20 +32,22 @@ public class pc_dynamic {
             NUM_THREADS = Integer.parseInt(args[0]);
             NUM_END = Integer.parseInt(args[1]);
         }
+        // 테스트 환경에서만 사용, 나중에 제거
         NUM_THREADS = 4;
         int counter = 0;
         int i;
-        DynamicThread[] threadList = new DynamicThread[NUM_THREADS];
         long startTime = System.currentTimeMillis();
-        for (i=0; i<NUM_THREADS; i++) {
-            threadList[i] = new DynamicThread(NUM_END);
-            threadList[i].start();
+        BlockThread[] threadArr = new BlockThread[NUM_THREADS];
+        int BLOCK_SIZE = NUM_END / NUM_THREADS;
+        for (i=1; i<(1+NUM_THREADS); i++) {
+            threadArr[i-1] = new BlockThread(BLOCK_SIZE * i, BLOCK_SIZE);
+            threadArr[i-1].start();
         }
         try {
             for (i=0; i<NUM_THREADS; i++) {
-                threadList[i].join();
+                threadArr[i].join();
+                counter += threadArr[i].getCnt();
             }
-            counter = DynamicThread.primeCnt;
         }
         catch (InterruptedException e) {
             e.printStackTrace();

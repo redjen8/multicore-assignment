@@ -1,8 +1,6 @@
-package project1;
+package proj1.problem2;
 
 import java.util.*;
-import java.util.stream.IntStream;
-import java.lang.*;
 
 class MatrixThread extends Thread {
 
@@ -48,7 +46,7 @@ public class MatMultD
     {
         int thread_no=0;
         if (args.length==1) thread_no = Integer.valueOf(args[0]);
-        else thread_no = 4;
+        else thread_no = 1;
             
         int a[][]=readMatrix();
         int b[][]=readMatrix();

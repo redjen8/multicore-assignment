@@ -1,33 +1,33 @@
-package project1;
+package proj1.problem1;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
-class CyclicThread extends Thread {
+class DynamicThread extends Thread {
 
-    private int primeCnt = 0;
-    private int residual = 0;
-    private int limit = 0;
-    private List<Integer> workArray;
+    private static AtomicInteger currentNum = new AtomicInteger(1);
+    public static int primeCnt = 0;
+    private int limit = 200000;
 
-    CyclicThread(int residual, int limit) {
-        this.residual = residual;
-        this.limit = limit;   
-    }
+    DynamicThread(int limit) {
+        this.limit = limit;
+    } 
 
     @Override
     public void run() {
-        for (int i = 0; 4*i + residual<limit; i++) {
-            if (pc_static_cyclic.isPrime(4*i + residual)) primeCnt++;
+        while(currentNum.get() < limit) {
+            increment();
         }
     }
 
-    public int getCnt () {
-        return this.primeCnt;
+    static synchronized void increment() {
+        if (pc_dynamic.isPrime(currentNum.get())) {
+            primeCnt++;
+        }
+        currentNum.incrementAndGet();
     }
 }
 
-public class pc_static_cyclic {
+public class pc_dynamic {
     private static int NUM_END = 200000;
     private static int NUM_THREADS = 1;
 
@@ -39,17 +39,17 @@ public class pc_static_cyclic {
         NUM_THREADS = 4;
         int counter = 0;
         int i;
-        CyclicThread[] threadList = new CyclicThread[NUM_THREADS];
+        DynamicThread[] threadList = new DynamicThread[NUM_THREADS];
         long startTime = System.currentTimeMillis();
         for (i=0; i<NUM_THREADS; i++) {
-            threadList[i] = new CyclicThread(i, NUM_END);
+            threadList[i] = new DynamicThread(NUM_END);
             threadList[i].start();
         }
         try {
             for (i=0; i<NUM_THREADS; i++) {
                 threadList[i].join();
-                counter += threadList[i].getCnt();
             }
+            counter = DynamicThread.primeCnt;
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -68,4 +68,5 @@ public class pc_static_cyclic {
         }
         return true;
     }
+    
 }
