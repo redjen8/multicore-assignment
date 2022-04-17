@@ -36,7 +36,7 @@ public class pc_static_cyclic {
             NUM_THREADS = Integer.parseInt(args[0]);
             NUM_END = Integer.parseInt(args[1]);
         }
-        NUM_THREADS = 4;
+    
         int counter = 0;
         int i;
         CyclicThread[] threadList = new CyclicThread[NUM_THREADS];

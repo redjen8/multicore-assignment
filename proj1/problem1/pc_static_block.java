@@ -32,8 +32,7 @@ public class pc_static_block {
             NUM_THREADS = Integer.parseInt(args[0]);
             NUM_END = Integer.parseInt(args[1]);
         }
-        // 테스트 환경에서만 사용, 나중에 제거
-        NUM_THREADS = 4;
+        
         int counter = 0;
         int i;
         long startTime = System.currentTimeMillis();
