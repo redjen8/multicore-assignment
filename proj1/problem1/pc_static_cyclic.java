@@ -1,24 +1,20 @@
 package proj1.problem1;
 
-import java.util.List;
-import java.util.ArrayList;
-
 class CyclicThread extends Thread {
 
     private int primeCnt = 0;
-    private int residual = 0;
-    private int limit = 0;
-    private List<Integer> workArray;
+    private int threadNum = 0;
+    static int limit = 0;
+    static int threadSize = 0;
 
-    CyclicThread(int residual, int limit) {
-        this.residual = residual;
-        this.limit = limit;   
+    CyclicThread(int residual) {
+        this.threadNum = residual;
     }
 
     @Override
     public void run() {
-        for (int i = 0; 4*i + residual<limit; i++) {
-            if (pc_static_cyclic.isPrime(4*i + residual)) primeCnt++;
+        for (int i = 0; threadSize*i + threadNum<limit; i++) {
+            if (pc_static_cyclic.isPrime(threadSize*i + threadNum)) primeCnt++;
         }
     }
 
@@ -39,10 +35,12 @@ public class pc_static_cyclic {
     
         int counter = 0;
         int i;
+        CyclicThread.threadSize = NUM_THREADS;
+        CyclicThread.limit = NUM_END;
         CyclicThread[] threadList = new CyclicThread[NUM_THREADS];
         long startTime = System.currentTimeMillis();
         for (i=0; i<NUM_THREADS; i++) {
-            threadList[i] = new CyclicThread(i, NUM_END);
+            threadList[i] = new CyclicThread(i);
             threadList[i].start();
         }
         try {
