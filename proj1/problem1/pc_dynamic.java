@@ -1,6 +1,8 @@
 package proj1.problem1;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class pc_dynamic {
     private static int NUM_END = 200000;
@@ -17,11 +19,12 @@ public class pc_dynamic {
         DynamicThread.t = NUM_THREADS * 2 - 1;
         DynamicThread.endNum = NUM_END;
         DynamicThread.primeCnt = 0;
+        DynamicThread.primeNumList.add(2);
 
         DynamicThread[] threadList = new DynamicThread[NUM_THREADS];
         long startTime = System.currentTimeMillis();
         for (i=0; i<NUM_THREADS; i++) {
-            threadList[i] = new DynamicThread(i*2+1, i);
+            threadList[i] = new DynamicThread(i);
             threadList[i].start();
         }
         try {
@@ -37,6 +40,7 @@ public class pc_dynamic {
         long timeDiff = endTime - startTime;
         System.out.println("Program Execution Time: " + timeDiff + "ms");
         System.out.println("1..." + (NUM_END -1) + " prime# counter=" + counter);
+        System.out.println(DynamicThread.primeNumList.size());
     }
 
     private static boolean isPrime(int x) {
@@ -53,9 +57,10 @@ public class pc_dynamic {
         private int startNum, thisThreadPrimeCnt, threadNum;
         static int primeCnt, endNum, t;
         long startTime, timeDiff;
+        static List<Integer> primeNumList = Collections.synchronizedList(new ArrayList<Integer>()); 
     
-        DynamicThread(int startNum, int threadNum) {
-            this.startNum = startNum;
+        DynamicThread(int threadNum) {
+            this.startNum = threadNum * 2 + 1;
             this.threadNum = threadNum;
         } 
     
@@ -63,7 +68,10 @@ public class pc_dynamic {
         public void run() {
             startTime = System.currentTimeMillis();
             while(t < endNum) {
-                if (isPrime(startNum)) thisThreadPrimeCnt++;
+                if (isPrime(startNum)) {
+                    thisThreadPrimeCnt++;
+                    primeNumList.add(startNum);
+                };
                 startNum = increment();
             }
             primeCnt += thisThreadPrimeCnt;
