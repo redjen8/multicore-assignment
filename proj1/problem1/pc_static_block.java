@@ -1,28 +1,5 @@
 package proj1.problem1;
 
-class BlockThread extends Thread {
-
-    private int blockSize = 50000;
-    private int endNum;
-    private int cnt = 0;
-
-    BlockThread(int i, int blockSize) {
-        this.endNum = i;
-        this.blockSize = blockSize;
-    }
-
-    @Override
-    public void run() {
-        for (int i = endNum-blockSize; i<endNum; i++) {
-            if(pc_static_block.isPrime(i)) cnt++;
-        }
-    }
-
-    public int getCnt() {
-        return this.cnt;
-    }
-}
-
 public class pc_static_block {
     private static int NUM_END = 200000;
     private static int NUM_THREADS = 1;
@@ -57,7 +34,7 @@ public class pc_static_block {
         System.out.println("1..." + (NUM_END -1) + " prime# counter=" + counter);
     }
 
-    static boolean isPrime(int x) {
+    private static boolean isPrime(int x) {
         int i;
         if (x <= 1) return false;
         for (i=2; i<x; i++) {
@@ -65,5 +42,31 @@ public class pc_static_block {
         }
         return true;
     }
+
+    class BlockThread extends Thread {
+
+        private int blockSize = 50000;
+        private int endNum;
+        private int cnt = 0;
     
+        BlockThread(int i, int blockSize) {
+            this.endNum = i;
+            this.blockSize = blockSize;
+        }
+    
+        @Override
+        public void run() {
+            long startTime = System.currentTimeMillis();
+            for (int i = endNum-blockSize; i<endNum; i++) {
+                if(pc_static_block.isPrime(i)) cnt++;
+            }
+            long endTime = System.currentTimeMillis();
+            long timeDiff = endTime - startTime;
+            System.out.println("[Thread " + endNum/blockSize + "] execution time : " + timeDiff + " ms");
+        }
+    
+        public int getCnt() {
+            return this.cnt;
+        }
+    }
 }
