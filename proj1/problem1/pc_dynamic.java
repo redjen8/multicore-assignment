@@ -18,7 +18,6 @@ public class pc_dynamic {
 
         DynamicThread.t = NUM_THREADS * 2 - 1;
         DynamicThread.endNum = NUM_END;
-        DynamicThread.primeCnt = 0;
         DynamicThread.primeNumList.add(2);
 
         DynamicThread[] threadList = new DynamicThread[NUM_THREADS];
@@ -31,7 +30,7 @@ public class pc_dynamic {
             for (i=0; i<NUM_THREADS; i++) {
                 threadList[i].join();
             }
-            counter = DynamicThread.primeCnt;
+            counter = DynamicThread.primeNumList.size();
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -40,7 +39,6 @@ public class pc_dynamic {
         long timeDiff = endTime - startTime;
         System.out.println("Program Execution Time: " + timeDiff + "ms");
         System.out.println("1..." + (NUM_END -1) + " prime# counter=" + counter);
-        System.out.println(DynamicThread.primeNumList.size());
     }
 
     private static boolean isPrime(int x) {
@@ -54,8 +52,8 @@ public class pc_dynamic {
     
     static class DynamicThread extends Thread {
 
-        private int startNum, thisThreadPrimeCnt, threadNum;
-        static int primeCnt, endNum, t;
+        private int startNum, threadNum;
+        static int endNum, t;
         long startTime, timeDiff;
         static List<Integer> primeNumList = Collections.synchronizedList(new ArrayList<Integer>()); 
     
@@ -69,12 +67,10 @@ public class pc_dynamic {
             startTime = System.currentTimeMillis();
             while(t < endNum) {
                 if (isPrime(startNum)) {
-                    thisThreadPrimeCnt++;
                     primeNumList.add(startNum);
                 };
                 startNum = increment();
             }
-            primeCnt += thisThreadPrimeCnt;
             timeDiff = System.currentTimeMillis() - startTime;
             System.out.println("[Thread " + threadNum + "] execution time : " + timeDiff + " ms");
         }
