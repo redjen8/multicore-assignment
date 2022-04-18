@@ -1,28 +1,5 @@
 package proj1.problem1;
 
-class CyclicThread extends Thread {
-
-    private int primeCnt = 0;
-    private int threadNum = 0;
-    static int limit = 0;
-    static int threadSize = 0;
-
-    CyclicThread(int residual) {
-        this.threadNum = residual;
-    }
-
-    @Override
-    public void run() {
-        for (int i = 0; threadSize*i + threadNum<limit; i++) {
-            if (pc_static_cyclic.isPrime(threadSize*i + threadNum)) primeCnt++;
-        }
-    }
-
-    public int getCnt () {
-        return this.primeCnt;
-    }
-}
-
 public class pc_static_cyclic {
     private static int NUM_END = 200000;
     private static int NUM_THREADS = 1;
@@ -58,12 +35,38 @@ public class pc_static_cyclic {
         System.out.println("1..." + (NUM_END -1) + " prime# counter=" + counter);
     }
 
-    static boolean isPrime(int x) {
+    private static boolean isPrime(int x) {
         int i;
         if (x <= 1) return false;
         for (i=2; i<x; i++) {
             if (x%i == 0) return false;
         }
         return true;
+    }
+
+    static class CyclicThread extends Thread {
+
+        private int primeCnt = 0;
+        private int threadNum = 0;
+        static int limit = 0;
+        static int threadSize = 0;
+    
+        CyclicThread(int residual) {
+            this.threadNum = residual;
+        }
+    
+        @Override
+        public void run() {
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; threadSize*i + threadNum<limit; i++) {
+                if (pc_static_cyclic.isPrime(threadSize*i + threadNum)) primeCnt++;
+            }
+            long timeDiff = System.currentTimeMillis() - startTime;
+            System.out.println("[Thread " + threadNum + "] execution time : " + timeDiff + " ms");
+        }
+    
+        public int getCnt () {
+            return this.primeCnt;
+        }
     }
 }
