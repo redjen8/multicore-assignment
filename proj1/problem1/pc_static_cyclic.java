@@ -50,6 +50,7 @@ public class pc_static_cyclic {
         private int threadNum = 0;
         static int limit = 0;
         static int threadSize = 0;
+
     
         CyclicThread(int residual) {
             this.threadNum = residual;
