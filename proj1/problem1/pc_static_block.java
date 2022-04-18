@@ -13,10 +13,10 @@ public class pc_static_block {
         int counter = 0;
         int i;
         long startTime = System.currentTimeMillis();
+        BlockThread.blockSize = NUM_END / NUM_THREADS;
         BlockThread[] threadArr = new BlockThread[NUM_THREADS];
-        int BLOCK_SIZE = NUM_END / NUM_THREADS;
         for (i=1; i<(1+NUM_THREADS); i++) {
-            threadArr[i-1] = new BlockThread(BLOCK_SIZE * i, BLOCK_SIZE);
+            threadArr[i-1] = new BlockThread(i);
             threadArr[i-1].start();
         }
         try {
@@ -43,15 +43,14 @@ public class pc_static_block {
         return true;
     }
 
-    class BlockThread extends Thread {
+    static class BlockThread extends Thread {
 
-        private int blockSize = 50000;
+        static int blockSize;
         private int endNum;
         private int cnt = 0;
     
-        BlockThread(int i, int blockSize) {
-            this.endNum = i;
-            this.blockSize = blockSize;
+        BlockThread(int i) {
+            this.endNum = i * blockSize;
         }
     
         @Override
