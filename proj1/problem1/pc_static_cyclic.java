@@ -59,8 +59,8 @@ public class pc_static_cyclic {
         @Override
         public void run() {
             long startTime = System.currentTimeMillis();
-            for (int i = 0; threadSize*i + threadNum<limit; i++) {
-                if (pc_static_cyclic.isPrime(threadSize*i + threadNum)) primeCnt++;
+            for (int i = threadNum; i<limit; i+=threadSize) {
+                if (pc_static_cyclic.isPrime(i)) primeCnt++;
             }
             long timeDiff = System.currentTimeMillis() - startTime;
             System.out.println("[Thread " + threadNum + "] execution time : " + timeDiff + " ms");
