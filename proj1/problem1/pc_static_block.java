@@ -9,11 +9,11 @@ public class pc_static_block {
             NUM_THREADS = Integer.parseInt(args[0]);
             NUM_END = Integer.parseInt(args[1]);
         }
-        
         int counter = 0;
         int i;
-        long startTime = System.currentTimeMillis();
         BlockThread.blockSize = NUM_END / NUM_THREADS;
+        if (BlockThread.blockSize * NUM_THREADS != NUM_END) counter = 1;
+        long startTime = System.currentTimeMillis();
         BlockThread[] threadArr = new BlockThread[NUM_THREADS];
         for (i=1; i<(1+NUM_THREADS); i++) {
             threadArr[i-1] = new BlockThread(i);
