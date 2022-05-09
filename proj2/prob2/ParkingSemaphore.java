@@ -1,45 +1,26 @@
-package proj2.prob1;
+package proj2.prob2;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Semaphore;
 
 class ParkingGarage {
-    private BlockingQueue<String> places;
+    private Semaphore places;
     public ParkingGarage(int capacity) {
     	if (capacity < 0)
     		capacity = 0;
-    	this.places = new ArrayBlockingQueue<>(capacity);
+    	this.places = new Semaphore(7);
     }
 
-    public void enter(String carName) { // enter parking garage
-		// print();
-		// System.out.println(carName + ": trying to enter");
+    public void enter() { // enter parking garage
         try {
-        	places.put(carName);
+        	places.acquire();
         } catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		// System.out.println(carName + ": just entered");
-		// print();
     }
 
     public void leave() { // leave parking garage
-		// print();
-		try {
-			String result = places.poll(1000L, TimeUnit.MILLISECONDS);
-			if (result == null) {
-				System.out.println("cannot execute take()");
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		// print();
+		places.release();
     }
-
-	private synchronized void print() {
-		System.out.println("\nremaining : " + Integer.toString(places.remainingCapacity()));
-	}
 }
   
 class Car extends Thread {
@@ -79,7 +60,7 @@ class Car extends Thread {
 			
 			tryingEnter();
 			try {
-				parkingGarage.enter(getName());
+				parkingGarage.enter();
 			}
 			catch (NumberFormatException e) {
 				e.printStackTrace();
