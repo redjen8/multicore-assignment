@@ -2,7 +2,6 @@ package proj2.prob1;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 class ParkingGarage {
     private BlockingQueue<String> places;
@@ -13,30 +12,20 @@ class ParkingGarage {
     }
 
     public void enter(String carName) { // enter parking garage
-		// print();
-		// System.out.println(carName + ": trying to enter");
         try {
         	places.put(carName);
         } catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		// System.out.println(carName + ": just entered");
-		// print();
     }
 
     public void leave() { // leave parking garage
-		// print();
 		try {
 			places.take();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		// print();
     }
-
-	private synchronized void print() {
-		System.out.println("\nremaining : " + Integer.toString(places.remainingCapacity()));
-	}
 }
   
 class Car extends Thread {
