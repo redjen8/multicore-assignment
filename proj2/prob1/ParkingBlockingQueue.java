@@ -2,6 +2,7 @@ package proj2.prob1;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 class ParkingGarage {
     private BlockingQueue<String> places;
@@ -10,22 +11,35 @@ class ParkingGarage {
     		capacity = 0;
     	this.places = new ArrayBlockingQueue<>(capacity);
     }
-    public synchronized void enter(String carName) { // enter parking garage
+
+    public void enter(String carName) { // enter parking garage
+		// print();
+		// System.out.println(carName + ": trying to enter");
         try {
         	places.put(carName);
         } catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		// System.out.println(carName + ": just entered");
+		// print();
     }
-    public synchronized String leave() { // leave parking garage
-		String carName = "";
+
+    public void leave() { // leave parking garage
+		// print();
 		try {
-			carName = places.take();
+			String result = places.poll(1000L, TimeUnit.MILLISECONDS);
+			if (result == null) {
+				System.out.println("cannot execute take()");
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return carName;
+		// print();
     }
+
+	private synchronized void print() {
+		System.out.println("\nremaining : " + Integer.toString(places.remainingCapacity()));
+	}
 }
   
 class Car extends Thread {
@@ -77,7 +91,7 @@ class Car extends Thread {
 			} catch (InterruptedException e) {}
 			
 			aboutToLeave();
-			System.out.println(parkingGarage.leave());
+			parkingGarage.leave();
 			Left();
       	}
     }
