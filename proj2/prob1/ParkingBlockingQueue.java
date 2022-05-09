@@ -27,10 +27,7 @@ class ParkingGarage {
     public void leave() { // leave parking garage
 		// print();
 		try {
-			String result = places.poll(1000L, TimeUnit.MILLISECONDS);
-			if (result == null) {
-				System.out.println("cannot execute take()");
-			}
+			places.take();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
