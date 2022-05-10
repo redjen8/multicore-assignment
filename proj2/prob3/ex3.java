@@ -6,11 +6,16 @@ class IncrementModule {
     private AtomicInteger sum;
 
     IncrementModule() {
-        sum = new AtomicInteger(0);
+        sum = new AtomicInteger();
+        sum.set(0);
     }
 
     public void addToSum(int number) {
         sum.addAndGet(number);
+    }
+
+    public void addToSum2(int number) {
+        sum.getAndAdd(number);
     }
 
     public int getCurrentSum() {
@@ -33,7 +38,8 @@ class IncrementWorker extends Thread {
     public void run() {
         System.out.println("[ThreadNum : " + threadNum + "] Adding " + Integer.toString((threadNum - 1) * workSize) + " to " + Integer.toString(threadNum * workSize));
         for(int i = (threadNum - 1) * workSize + 1; i <= threadNum * workSize; i++) {
-            incrementModule.addToSum(i);
+            if (i % 2 == 0) incrementModule.addToSum(i);
+            else incrementModule.addToSum2(i);
         }
         System.out.println("[ThreadNum : " + threadNum + "] Current Sum : " + Integer.toString(incrementModule.getCurrentSum()));
     }
