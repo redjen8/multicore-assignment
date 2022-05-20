@@ -47,7 +47,7 @@ void main (int argc, char *argv[])
 	pi = step * sum;
 	end_time = omp_get_wtime();
 	double timeDiff = end_time - start_time;
-        printf("Execution Time : %lfms\n", timeDiff);
+        printf("Execution Time : %lfms\n", timeDiff * 1000);
 
 	printf("pi=%.24lf\n",pi);
 }
