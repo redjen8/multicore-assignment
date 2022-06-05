@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <omp.h>
 
 #define CUDA 0
 #define OPENMP 1
@@ -94,6 +95,8 @@ int main(int argc, char* argv[])
 		no_threads=atoi(argv[1]);
 	}
 
+	double start_time, end_time;
+	start_time = omp_get_wtime();
 	Sphere *temp_s = (Sphere*)malloc( sizeof(Sphere) * SPHERES );
 	for (int i=0; i<SPHERES; i++) {
 		temp_s[i].r = rnd( 1.0f );
@@ -109,7 +112,9 @@ int main(int argc, char* argv[])
 	for (x=0;x<DIM;x++) 
 		for (y=0;y<DIM;y++) kernel(x,y,temp_s,bitmap);
 	ppm_write(bitmap,DIM,DIM,fp);
-
+	end_time = omp_get_wtime();
+	double timeDiff = end_time - start_time;
+	printf("Execution time : %lfms\n", timeDiff * 1000);
 	fclose(fp);
 	free(bitmap);
 	free(temp_s);
