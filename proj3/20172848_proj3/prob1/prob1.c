@@ -65,6 +65,6 @@ int main(int argc, char *argv[]) {
     }
     double end_time = omp_get_wtime();
     printf("Total Prime Number : %d\n", primeCnt);
-    printf("Execution Time : %lfs\n", (end_time - start_time) * 1000);
+    printf("Execution Time : %lfms\n", (end_time - start_time) * 1000);
     return 0;
 }
