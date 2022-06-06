@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
 	ppm_write(bitmap,DIM,DIM,fp);
 	end_time = omp_get_wtime();
 	double timeDiff = end_time - start_time;
-	printf("Execution time : %lfms\n", timeDiff * 1000);
+	printf("OpenMP (%d threads) ray tracing: %lfsec\n", no_threads, timeDiff);
 	printf("[%s] was generated.\n", argv[2]);
 	fclose(fp);
 	free(bitmap);
