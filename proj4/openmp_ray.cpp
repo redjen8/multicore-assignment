@@ -95,6 +95,7 @@ int main(int argc, char* argv[])
 		no_threads=atoi(argv[1]);
 	}
 
+
 	double start_time, end_time;
 	start_time = omp_get_wtime();
 	Sphere *temp_s = (Sphere*)malloc( sizeof(Sphere) * SPHERES );
@@ -108,13 +109,23 @@ int main(int argc, char* argv[])
 		temp_s[i].radius = rnd( 200.0f ) + 40;
 	}
 	
+	omp_set_num_threads(no_threads);
 	bitmap=(unsigned char*)malloc(sizeof(unsigned char)*DIM*DIM*4);
+
+	#pragma omp parallel for collapse(2)
 	for (x=0;x<DIM;x++) 
-		for (y=0;y<DIM;y++) kernel(x,y,temp_s,bitmap);
+	{	
+		for (y=0;y<DIM;y++) 
+		{
+			kernel(x,y,temp_s,bitmap);
+		}
+	}
+		
 	ppm_write(bitmap,DIM,DIM,fp);
 	end_time = omp_get_wtime();
 	double timeDiff = end_time - start_time;
 	printf("Execution time : %lfms\n", timeDiff * 1000);
+	printf("[%s] was generated.\n", argv[2]);
 	fclose(fp);
 	free(bitmap);
 	free(temp_s);
