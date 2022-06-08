@@ -8,16 +8,6 @@
 
 #define N 1000000000
 
-#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, char *file, int line, bool abort=true)
-{
-   if (code != cudaSuccess)
-   {
-      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-      if (abort) exit(code);
-   }
-}
-
 struct convert_pi
 {
 	const double step = 0.000000001;
@@ -33,13 +23,10 @@ int main(void) {
 	auto startTime = std::chrono::high_resolution_clock::now();
 	thrust::device_vector<int> data(N);
 	thrust::sequence(data.begin(), data.end());
-	// for (int i = 0; i<data.size(); i++) {
-	// 	std::cout << "data [" << i << "] = " << data[i] << std::endl;
-	// }
 	convert_pi unary_op;
 	thrust::plus<double> binary_op;
 	double result = thrust::transform_reduce(thrust::device, data.begin(), data.end(), unary_op, (double) 0.0, binary_op) * alpha;
-	gpuErrchk(cudaDeviceSynchronize());
+	cudaDeviceSynchronize();
 	auto endTime = std::chrono::high_resolution_clock::now();
 	auto timeDiff = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
 	std::cout.precision(24);
