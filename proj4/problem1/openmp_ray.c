@@ -13,21 +13,22 @@
 #define INF 2e10f
 #define DIM 2048
 
-struct Sphere {
+typedef struct Sphere {
     float   r,b,g;
     float   radius;
     float   x,y,z;
-    float hit( float ox, float oy, float *n ) {
-        float dx = ox - x;
-        float dy = oy - y;
-        if (dx*dx + dy*dy < radius*radius) {
-            float dz = sqrtf( radius*radius - dx*dx - dy*dy );
-            *n = dz / sqrtf( radius * radius );
-            return dz + z;
-        }
-        return -INF;
-    }
-};
+}Sphere;
+
+float hit(Sphere s, float ox, float oy, float *n) {
+	float dx = ox - s.x;
+	float dy = oy - s.y;
+	if (dx*dx + dy*dy < s.radius * s.radius) {
+		float dz = sqrtf( s.radius * s.radius - dx*dx - dy*dy );
+		*n = dz / sqrtf( s.radius * s.radius );
+		return dz + s.z;
+	}
+    return -INF;
+}
 
 void kernel(int x, int y, Sphere* s, unsigned char* ptr)
 {
@@ -41,7 +42,7 @@ void kernel(int x, int y, Sphere* s, unsigned char* ptr)
 	float   maxz = -INF;
 	for(int i=0; i<SPHERES; i++) {
 		float   n;
-		float   t = s[i].hit( ox, oy, &n );
+		float   t = hit( s[i], ox, oy, &n );
 		if (t > maxz) {
 			float fscale = n;
 			r = s[i].r * fscale;
