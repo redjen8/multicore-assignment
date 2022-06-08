@@ -19,7 +19,6 @@ struct convert_pi
 
 int main(void) {
 	double alpha = 1 / (double) N;
-
 	auto startTime = std::chrono::high_resolution_clock::now();
 	thrust::device_vector<int> data(N);
 	thrust::sequence(data.begin(), data.end());
@@ -31,6 +30,7 @@ int main(void) {
 	auto timeDiff = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
 	std::cout.precision(24);
 	std::cout << "PI : " << result << std::endl;
-	std::cout << "Execution time : " << timeDiff.count() / 1000 << " ms" << std::endl;
+	std::cout.precision(10);
+	std::cout << "Execution time : " << timeDiff.count() / (double)1000 << " ms" << std::endl;
 	return 0;
 }
