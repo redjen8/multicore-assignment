@@ -11,16 +11,6 @@
 #define INF 2e10f
 #define DIM 2048
 
-#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, char *file, int line, bool abort=true)
-{
-   if (code != cudaSuccess)
-   {
-      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-      if (abort) exit(code);
-   }
-}
-
 struct Sphere {
     float   r,b,g;
     float   radius;
@@ -108,20 +98,20 @@ int main (void) {
     int bitmapSize = sizeof(unsigned char) * DIM * DIM * 4;
     Sphere* sphere_d = (Sphere*) malloc (sphereSize);
     unsigned char* bitmap_d = (unsigned char*) malloc (bitmapSize);
-    gpuErrchk(cudaMalloc((void**)&sphere_d, sphereSize));
-    gpuErrchk(cudaMalloc((void**)&bitmap_d, bitmapSize));
+    cudaMalloc((void**)&sphere_d, sphereSize);
+    cudaMalloc((void**)&bitmap_d, bitmapSize);
 
-    gpuErrchk(cudaMemcpy(sphere_d, sphere_h, sphereSize, cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMemcpy(bitmap_d, bitmap_h, bitmapSize, cudaMemcpyHostToDevice));
+    cudaMemcpy(sphere_d, sphere_h, sphereSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(bitmap_d, bitmap_h, bitmapSize, cudaMemcpyHostToDevice);
 	dim3 dimBlock(32, 32);
 	dim3 dimGrid(64, 64);
     kernel_compute<<<dimGrid, dimBlock>>>(sphere_d, bitmap_d);
-	gpuErrchk(cudaDeviceSynchronize());
+	cudaDeviceSynchronize();
 
-	gpuErrchk(cudaMemcpy(bitmap_h, bitmap_d, bitmapSize, cudaMemcpyDeviceToHost));
+	cudaMemcpy(bitmap_h, bitmap_d, bitmapSize, cudaMemcpyDeviceToHost);
 
-	gpuErrchk(cudaFree(sphere_d));
-	gpuErrchk(cudaFree(bitmap_d));
+	cudaFree(sphere_d);
+	cudaFree(bitmap_d);
 
 	ppm_write(bitmap_h,DIM,DIM,fp);
     clock_t end = clock();
