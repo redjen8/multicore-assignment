@@ -5,8 +5,6 @@
 #include <math.h>
 #include <omp.h>
 
-#define CUDA 0
-#define OPENMP 1
 #define SPHERES 20
 
 #define rnd( x ) (x * rand() / RAND_MAX)
@@ -76,26 +74,24 @@ void ppm_write(unsigned char* bitmap, int xdim,int ydim, FILE* fp)
 int main(int argc, char* argv[])
 {
 	int no_threads;
-	int option;
 	int x,y;
 	unsigned char* bitmap;
 
 	srand(time(NULL));
 
-	if (argc!=3) {
-		printf("> a.out [option] [filename.ppm]\n");
-		printf("[option] 0: CUDA, 1~16: OpenMP using 1~16 threads\n");
-		printf("for example, '> a.out 8 result.ppm' means executing OpenMP with 8 threads\n");
+	if (argc!=2) {
+		printf("Please input thread number for execution.\n");
 		exit(0);
 	}
-	FILE* fp = fopen(argv[2],"w");
+	FILE* fp = fopen("result_omp.ppm","w");
 
-	if (strcmp(argv[1],"0")==0) option=CUDA;
+	if (strcmp(argv[1],"0")==0) 
+	{
+		printf("Please valid integer for thread number.\n");
+	}
 	else { 
-		option=OPENMP;
 		no_threads=atoi(argv[1]);
 	}
-
 
 	double start_time, end_time;
 	start_time = omp_get_wtime();
@@ -126,7 +122,7 @@ int main(int argc, char* argv[])
 	end_time = omp_get_wtime();
 	double timeDiff = end_time - start_time;
 	printf("OpenMP (%d threads) ray tracing: %lfsec\n", no_threads, timeDiff);
-	printf("[%s] was generated.\n", argv[2]);
+	printf("[%s] was generated.\n", "result_omp.ppm");
 	fclose(fp);
 	free(bitmap);
 	free(temp_s);
